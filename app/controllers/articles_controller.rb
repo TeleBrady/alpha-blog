@@ -9,4 +9,34 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
   end
 
+  def new
+    @article = Article.new
+  end
+
+  def edit
+    @article = Article.find(params[:id])
+  end
+
+  def create
+    #render plain: params[:article]
+    @article = Article.new(params.require(:article).permit(:title, :description))
+    if @article.save
+      flash[:notice] = "Article created sucessfully."
+      #redirect_to article_path(@article) -OR-
+      redirect_to @article
+    else
+      render 'new', status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @article = Article.find(params[:id])
+    if @article.update(params.require(:article).permit(:title, :description))
+      flash[:notice] = "Article updated sucessfully."
+      redirect_to @article
+    else
+      render 'edit', status: :unprocessable_entity
+    end
+  end
+
 end
